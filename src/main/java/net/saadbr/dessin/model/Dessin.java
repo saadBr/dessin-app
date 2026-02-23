@@ -1,5 +1,7 @@
 package net.saadbr.dessin.model;
 
+import net.saadbr.dessin.security.Role;
+import net.saadbr.dessin.security.Secured;
 import net.saadbr.dessin.strategy.TraitementFiguresStrategy;
 
 import java.io.*;
@@ -19,10 +21,12 @@ public class Dessin implements Serializable {
         this.nom = nom;
         this.parametrage = parametrage;
     }
+    @Secured({Role.USER, Role.ADMIN})
     public void add(Figure figure) {
         if (figure == null) return;
         figures.add(figure);
     }
+    @Secured({Role.USER, Role.ADMIN})
     public void del(Figure figure) {
         if (figure == null) return;
         figures.remove(figure);
@@ -30,6 +34,7 @@ public class Dessin implements Serializable {
     public List<Figure> getFigures() {
         return Collections.unmodifiableList(figures);
     }
+    @Secured({Role.USER, Role.ADMIN})
     public void afficherFigures() {
         System.out.println("=== Dessin : " + nom + " ===");
         for (Figure f : figures) {
@@ -39,6 +44,7 @@ public class Dessin implements Serializable {
     public void setTraitementFiguresStrategy(TraitementFiguresStrategy traitementFiguresStrategy) {
         this.strategy = traitementFiguresStrategy;
     }
+    @Secured({Role.USER, Role.ADMIN})
     public void traiter() {
         if (strategy == null) {
             System.out.println("Aucune stratégie de traitement n'est définie pour le dessin " + nom);
@@ -46,6 +52,7 @@ public class Dessin implements Serializable {
         }
         strategy.traiter(figures);
     }
+    @Secured(Role.ADMIN)
     public void serialiserDansFichier(String fileName) {
         try (ObjectOutputStream oos =
                      new ObjectOutputStream(new FileOutputStream(fileName))) {
